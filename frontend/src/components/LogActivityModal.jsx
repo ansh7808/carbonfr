@@ -182,6 +182,7 @@ const CarbonForm = ({ setResultData }) => {
       // Success! Backend se naya record (result) mila
       toast.dismiss();
       toast.success('Log Saved!');
+      localStorage.setItem('lastLog_carbon', new Date().toLocaleDateString());
       setResultData({ type: 'carbon', data: response.data }); // Result ko parent component mein set karo
       
     } catch (err) {
@@ -323,6 +324,8 @@ const WaterForm = ({ setResultData }) => {
       
       toast.dismiss();
       toast.success('Log Saved!');
+      // ===== YEH RAHA BADLAAV =====
+      localStorage.setItem('lastLog_water', new Date().toLocaleDateString());
       setResultData({ type: 'water', data: response.data }); // Type ke saath save karo
       
     } catch (err) {
@@ -438,6 +441,8 @@ const HealthForm = ({ setResultData }) => {
       
       toast.dismiss();
       toast.success('Log Saved!');
+      // ===== YEH RAHA BADLAAV =====
+      localStorage.setItem('lastLog_health', new Date().toLocaleDateString());
       setResultData({ type: 'health', data: response.data }); // Type ke saath save karo
       
     } catch (err) {
@@ -548,6 +553,9 @@ const FinanceForm = ({ setResultData }) => {
       
       toast.dismiss();
       toast.success('Log Saved!');
+      // ===== YEH RAHA BADLAAV =====
+      localStorage.setItem('lastLog_finance', new Date().toLocaleDateString());
+      // ==============================
       setResultData({ type: 'finance', data: response.data }); // Type ke saath save karo
       
     } catch (err) {

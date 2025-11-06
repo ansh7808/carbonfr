@@ -107,8 +107,9 @@
 // export default DashboardPage;
 
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../AuthContext.jsx';
+import { useNavigate } from 'react-router-dom';
 import FunctionalCard from '../components/FunctionalCard.jsx';
 import LogActivityModal from '../components/LogActivityModal.jsx';
 import QuickLog from '../components/QuickLog.jsx';
@@ -123,8 +124,31 @@ const getGreeting = () => {
 
 const DashboardPage = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState(null);
+
+  const [disabledCards, setDisabledCards] = useState({});
+
+  // Function jo localStorage check karega
+  const checkDisabledStatus = () => {
+    const today = new Date().toLocaleDateString(); // e.g., "11/6/2025"
+    const disabled = {};
+    const types = ['carbon', 'water', 'health', 'finance'];
+    
+    types.forEach(type => {
+      const lastLogDate = localStorage.getItem(`lastLog_${type}`);
+      if (lastLogDate === today) {
+        disabled[type] = true; // Disable karo
+      }
+    });
+    setDisabledCards(disabled);
+  };
+
+  // Page load hote hi check karo
+  useEffect(() => {
+    checkDisabledStatus();
+  }, []);
 
   const openModal = (type) => {
     setModalType(type);
@@ -134,6 +158,7 @@ const DashboardPage = () => {
   const closeModal = () => {
     setIsModalOpen(false);
     setModalType(null);
+    checkDisabledStatus();
   };
 
   return (
@@ -158,6 +183,34 @@ const DashboardPage = () => {
             "Your small actions today are shaping a better tomorrow. Let's log your impact."
           </p>
           <QuickLog openModal={openModal} />
+            {/* Personal Fitness navigation button */}
+          <div className="mb-10 flex justify-center">
+            <div
+              onClick={() => navigate('/fitness-details')}
+              className="cursor-pointer bg-gradient-to-r from-green-400 to-blue-400 text-white shadow-md rounded-2xl p-6 w-[280px] sm:w-[300px] md:w-[340px] hover:scale-105 transform transition-all duration-300 flex flex-col items-center justify-center"
+            >
+              <div className="bg-white p-3 rounded-full mb-3 shadow">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth={2}
+                  stroke="currentColor"
+                  className="w-10 h-10 text-green-600"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 6v6l4 2m4-8A9 9 0 11 3 12a9 9 0 0117 0z"
+                  />
+                </svg>
+              </div>
+              <h3 className="text-lg font-semibold tracking-wide">Personal Fitness</h3>
+              <p className="text-sm text-white/90 text-center mt-2">
+                Track your wellness, health, and finance insights
+              </p>
+            </div>
+          </div>
         </div>
 
         {/* 2. AAPKE 4 CARDS (Wave divider ki ab zaroorat nahi) */}
@@ -175,6 +228,7 @@ const DashboardPage = () => {
                 bgColor="bg-green-100"
                 linkTo="/dashboard/carbon"
                 onButtonClick={() => openModal('carbon')}
+                isDisabled={disabledCards['carbon']}
               />
               <FunctionalCard
                 title="Water Footprint"
@@ -183,6 +237,7 @@ const DashboardPage = () => {
                 bgColor="bg-blue-100"
                 linkTo="/dashboard/water"
                 onButtonClick={() => openModal('water')}
+                isDisabled={disabledCards['water']} // NAYA PROP
               />
               <FunctionalCard
                 title="Health & Wellness"
@@ -191,6 +246,7 @@ const DashboardPage = () => {
                 bgColor="bg-pink-100"
                 linkTo="/dashboard/health"
                 onButtonClick={() => openModal('health')}
+                isDisabled={disabledCards['health']} // NAYA PROP
               />
               <FunctionalCard
                 title="Financial Health"
@@ -199,6 +255,7 @@ const DashboardPage = () => {
                 bgColor="bg-yellow-100"
                 linkTo="/dashboard/finance"
                 onButtonClick={() => openModal('finance')}
+                isDisabled={disabledCards['finance']} // NAYA PROP
               />
             </div>
           </div>

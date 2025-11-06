@@ -11,7 +11,7 @@ import ChartPage from './pages/ChartPage.jsx';
 import Layout from './components/Layout.jsx';
 import ProfilePage from './pages/ProfilePage.jsx';
 import HistoryPage from './pages/HistoryPage.jsx';
-
+import FitnessDetails from './pages/FitnessDetails.jsx';
 import { useAuth } from './AuthContext.jsx';
 
 // Yeh component check karega ki user logged in hai ya nahi
@@ -52,6 +52,7 @@ function App() {
         <Route path="dashboard/:type" element={<ChartPage />} />
         <Route path="dashboard/:type/history" element={<HistoryPage />} />
         <Route path="profile" element={<ProfilePage />} /> {/* NAYA ROUTE */}
+        <Route path="fitness-details" element={<FitnessDetails />} />
       </Route>
 
     </Routes>

@@ -37,8 +37,22 @@ import React, { Fragment } from 'react'; // Fragment import karo
 import { Link } from 'react-router-dom';
 import { Menu, Transition } from '@headlessui/react'; // Dropdown ke liye
 import { ThreeDotsIcon } from './icons/index.js'; // 3-dot icon
+import toast from 'react-hot-toast';// NAYA IMPORT (Error dikhane ke liye)
 
-const FunctionalCard = ({ title, description, icon, bgColor, linkTo, onButtonClick }) => {
+const FunctionalCard = ({ title, description, icon, bgColor, linkTo, onButtonClick, isDisabled }) => {
+
+    // ===== NAYA CLICK HANDLER =====
+  const handleLogClick = (e) => {
+    e.stopPropagation();
+    if (isDisabled) {
+      // Agar disable hai, toh error toast dikhao
+      toast.error("You've already made today's log. Come back tomorrow!");
+    } else {
+      // Agar disable nahi hai, toh modal kholo
+      onButtonClick();
+    }
+  };
+  // ==============================
   return (
     // ===== YEH RAHA BADLAAV (Glass Effect + 'relative') =====
     <div className="relative bg-white/70 backdrop-blur-lg shadow-2xl rounded-xl overflow-hidden flex flex-col border border-white/50">
@@ -109,13 +123,18 @@ const FunctionalCard = ({ title, description, icon, bgColor, linkTo, onButtonCli
       {/* Button waala hissa waisa hi rahega */}
       <div className="p-4 bg-white/50 border-t border-gray-200/50 mt-auto">
         <button
-          onClick={(e) => {
-            e.stopPropagation();
-            onButtonClick();
-          }}
-          className="w-full px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+        //   onClick={(e) => {
+        //     e.stopPropagation();
+        //     onButtonClick();
+        //   }}
+          onClick={handleLogClick} // Naya function use karo
+          disabled={isDisabled} // Button ko disable karo
+          className="w-full px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500
+                     disabled:bg-gray-400 disabled:cursor-not-allowed" // Disable hone par style
+        //   className="w-full px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
         >
-          Log Today's Activity
+          {/* Log Today's Activity */}
+          {isDisabled ? "Logged for Today" : "Log Today's Activity"}
         </button>
       </div>
     </div>
