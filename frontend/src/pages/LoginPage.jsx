@@ -22,7 +22,7 @@ const LoginPage = () => {
     try {
       // Yahaan API call jaayegi!
       // NOTE: URL ko apne backend server ke hisaab se badal lena
-      const response = await axios.post('http://localhost:5000/user/login', {
+      const response = await axios.post('http://localhost:5000/api/user/login', {
         email: email,
         password: password,
       });

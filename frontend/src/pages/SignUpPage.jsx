@@ -37,7 +37,7 @@ const SignUpPage = () => {
     try {
       // Yahaan API call jaayegi!
       // NOTE: URL ko apne backend server ke hisaab se badal lena
-      const response = await axios.post('http://localhost:5000/user/signup', formData);
+      const response = await axios.post('http://localhost:5000/api/user/signup', formData);
 
       console.log('Success:', response.data); // Backend se mila response
       toast.success('Account created! Please log in.');

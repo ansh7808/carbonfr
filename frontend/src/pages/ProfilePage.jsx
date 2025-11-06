@@ -29,7 +29,7 @@ const ProfilePage = () => {
       try {
         // Nayi GET API ko call karo
         const response = await axios.get(
-          'http://localhost:5000/user/profile', // Aapka naya GET route
+          'http://localhost:5000/api/user/profile', // Aapka naya GET route
           {
             headers: { 'Authorization': `Bearer ${token}` } // Token bhejna zaroori hai
           }
