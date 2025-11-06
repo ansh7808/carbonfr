@@ -1,6 +1,6 @@
 const express = require('express');
 const userRouter = express.Router();
-const {signup,login,getUserProfile}  = require('../controllers/user');
+const {signup,login,getUserProfile}  = require('../controllers/userController');
 const authenticateJWT = require('../middlewares/authentication');
 
 // Signup route

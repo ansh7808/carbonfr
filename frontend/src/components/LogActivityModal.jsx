@@ -123,23 +123,37 @@ const CarbonForm = ({ setResultData }) => {
   
   // Aapke schema ke hisaab se poori state
   const [formData, setFormData] = useState({
-    carKm: 0,
-    bikeKm: 0,
-    busKm: 0,
-    trainKm: 0,
-    flightKm: 0,
-    electricityKwh: 0,
-    gasKg: 0,
-    meatServings: 0,
-    dairyServings: 0,
-    vegServings: 0,
+    // carKm: 0,
+    // bikeKm: 0,
+    // busKm: 0,
+    // trainKm: 0,
+    // flightKm: 0,
+    // electricityKwh: 0,
+    // gasKg: 0,
+    // meatServings: 0,
+    // dairyServings: 0,
+    // vegServings: 0,
+    carKm: '',
+    bikeKm: '',
+    busKm: '',
+    trainKm: '',
+    flightKm: '',
+    electricityKwh: '',
+    gasKg: '',
+    meatServings: '',
+    dairyServings: '',
+    vegServings: '',
   });
 
   // Har input change par state update karega
   const handleChange = (e) => {
+    // setFormData({
+    //   ...formData,
+    //   [e.target.name]: Number(e.target.value) || 0, // Value ko Number mein convert karo
+    // });
     setFormData({
       ...formData,
-      [e.target.name]: Number(e.target.value) || 0, // Value ko Number mein convert karo
+      [e.target.name]: e.target.value, // Sirf string save karo
     });
   };
 
@@ -148,6 +162,11 @@ const CarbonForm = ({ setResultData }) => {
     e.preventDefault();
     setIsLoading(true);
     toast.loading('Calculating & Saving...');
+
+    const numericFormData = {};
+    for (const key in formData) {
+      numericFormData[key] = Number(formData[key]) || 0;
+    }
 
     try {
       // Aapke backend route ko call karo (yeh 'authMiddleware' se protected hai)
@@ -163,7 +182,7 @@ const CarbonForm = ({ setResultData }) => {
       // Success! Backend se naya record (result) mila
       toast.dismiss();
       toast.success('Log Saved!');
-      setResultData(response.data); // Result ko parent component mein set karo
+      setResultData({ type: 'carbon', data: response.data }); // Result ko parent component mein set karo
       
     } catch (err) {
       toast.dismiss();
@@ -182,23 +201,28 @@ const CarbonForm = ({ setResultData }) => {
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label htmlFor="carKm" className="block text-sm font-medium text-gray-700">Car (km)</label>
-            <input type="number" min="0" name="carKm" id="carKm" value={formData.carKm} onChange={handleChange} className="mt-1 block w-full py-2 px-3 border... rounded-md"/>
+            <input type="number" min="0" name="carKm" id="carKm" value={formData.carKm} onChange={handleChange} placeholder="0"
+            className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm"/>
           </div>
           <div>
             <label htmlFor="bikeKm" className="block text-sm font-medium text-gray-700">Bike (km)</label>
-            <input type="number" min="0" name="bikeKm" id="bikeKm" value={formData.bikeKm} onChange={handleChange} className="mt-1 block w-full py-2 px-3 border... rounded-md"/>
+            <input type="number" min="0" name="bikeKm" id="bikeKm" value={formData.bikeKm} onChange={handleChange} placeholder="0"
+            className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm"/>
           </div>
           <div>
             <label htmlFor="busKm" className="block text-sm font-medium text-gray-700">Bus (km)</label>
-            <input type="number" min="0" name="busKm" id="busKm" value={formData.busKm} onChange={handleChange} className="mt-1 block w-full py-2 px-3 border... rounded-md"/>
+            <input type="number" min="0" name="busKm" id="busKm" value={formData.busKm} onChange={handleChange} placeholder="0" 
+            className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm"/>
           </div>
           <div>
             <label htmlFor="trainKm" className="block text-sm font-medium text-gray-700">Train (km)</label>
-            <input type="number" min="0" name="trainKm" id="trainKm" value={formData.trainKm} onChange={handleChange} className="mt-1 block w-full py-2 px-3 border... rounded-md"/>
+            <input type="number" min="0" name="trainKm" id="trainKm" value={formData.trainKm} onChange={handleChange} placeholder="0" 
+            className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm"/>
           </div>
           <div>
             <label htmlFor="flightKm" className="block text-sm font-medium text-gray-700">Flight (km)</label>
-            <input type="number" min="0" name="flightKm" id="flightKm" value={formData.flightKm} onChange={handleChange} className="mt-1 block w-full py-2 px-3 border... rounded-md"/>
+            <input type="number" min="0" name="flightKm" id="flightKm" value={formData.flightKm} onChange={handleChange} placeholder="0" 
+            className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm"/>
           </div>
         </div>
       </fieldset>
@@ -209,11 +233,13 @@ const CarbonForm = ({ setResultData }) => {
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label htmlFor="electricityKwh" className="block text-sm font-medium text-gray-700">Electricity (kWh)</label>
-            <input type="number" min="0" name="electricityKwh" id="electricityKwh" value={formData.electricityKwh} onChange={handleChange} className="mt-1 block w-full py-2 px-3 border... rounded-md"/>
+            <input type="number" min="0" name="electricityKwh" id="electricityKwh" value={formData.electricityKwh} onChange={handleChange} placeholder="0"
+            className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm"/>
           </div>
           <div>
             <label htmlFor="gasKg" className="block text-sm font-medium text-gray-700">Gas (kg)</label>
-            <input type="number" min="0" name="gasKg" id="gasKg" value={formData.gasKg} onChange={handleChange} className="mt-1 block w-full py-2 px-3 border... rounded-md"/>
+            <input type="number" min="0" name="gasKg" id="gasKg" value={formData.gasKg} onChange={handleChange} placeholder="0" 
+            className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm"/>
           </div>
         </div>
       </fieldset>
@@ -224,15 +250,18 @@ const CarbonForm = ({ setResultData }) => {
         <div className="grid grid-cols-3 gap-4">
           <div>
             <label htmlFor="meatServings" className="block text-sm font-medium text-gray-700">Meat (serv.)</label>
-            <input type="number" min="0" name="meatServings" id="meatServings" value={formData.meatServings} onChange={handleChange} className="mt-1 block w-full py-2 px-3 border... rounded-md"/>
+            <input type="number" min="0" name="meatServings" id="meatServings" value={formData.meatServings} onChange={handleChange} placeholder="0" 
+            className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm"/>
           </div>
           <div>
             <label htmlFor="dairyServings" className="block text-sm font-medium text-gray-700">Dairy (serv.)</label>
-            <input type="number" min="0" name="dairyServings" id="dairyServings" value={formData.dairyServings} onChange={handleChange} className="mt-1 block w-full py-2 px-3 border... rounded-md"/>
+            <input type="number" min="0" name="dairyServings" id="dairyServings" value={formData.dairyServings} onChange={handleChange} placeholder="0" 
+            className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm"/>
           </div>
           <div>
             <label htmlFor="vegServings" className="block text-sm font-medium text-gray-700">Veg (serv.)</label>
-            <input type="number" min="0" name="vegServings" id="vegServings" value={formData.vegServings} onChange={handleChange} className="mt-1 block w-full py-2 px-3 border... rounded-md"/>
+            <input type="number" min="0" name="vegServings" id="vegServings" value={formData.vegServings} onChange={handleChange} placeholder="0" 
+            className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm"/>
           </div>
         </div>
       </fieldset>
@@ -254,18 +283,22 @@ const WaterForm = ({ setResultData }) => {
   
   // Aapke naye schema ke hisaab se state
   const [formData, setFormData] = useState({
-    drinkingL: 0,
-    showerMin: 0,
-    laundryLoads: 0,
-    dishUses: 0,
-    meatServings: 0,
-    vegServings: 0,
+   drinkingL: '',
+    showerMin: '',
+    laundryLoads: '',
+    dishUses: '',
+    meatServings: '',
+    vegServings: '',
   });
 
   const handleChange = (e) => {
+    // setFormData({
+    //   ...formData,
+    //   [e.target.name]: Number(e.target.value) || 0,
+    // });
     setFormData({
       ...formData,
-      [e.target.name]: Number(e.target.value) || 0,
+      [e.target.name]: e.target.value,
     });
   };
 
@@ -273,6 +306,11 @@ const WaterForm = ({ setResultData }) => {
     e.preventDefault();
     setIsLoading(true);
     toast.loading('Calculating & Saving Water...');
+
+    const numericFormData = {};
+    for (const key in formData) {
+      numericFormData[key] = Number(formData[key]) || 0;
+    }
 
     try {
       // Aapke naye backend route ko call karo
@@ -304,19 +342,23 @@ const WaterForm = ({ setResultData }) => {
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label htmlFor="drinkingL" className="block text-sm font-medium text-gray-700">Drinking (L)</label>
-            <input type="number" min="0" name="drinkingL" id="drinkingL" value={formData.drinkingL} onChange={handleChange} className="mt-1 block w-full py-2 px-3 border... rounded-md"/>
+            <input type="number" min="0" name="drinkingL" id="drinkingL" value={formData.drinkingL} onChange={handleChange} placeholder="0" 
+            className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-600 focus:border-blue-600 sm:text-sm"/>
           </div>
           <div>
             <label htmlFor="showerMin" className="block text-sm font-medium text-gray-700">Shower (mins)</label>
-            <input type="number" min="0" name="showerMin" id="showerMin" value={formData.showerMin} onChange={handleChange} className="mt-1 block w-full py-2 px-3 border... rounded-md"/>
+            <input type="number" min="0" name="showerMin" id="showerMin" value={formData.showerMin} onChange={handleChange} placeholder="0" 
+            className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-600 focus:border-blue-600 sm:text-sm"/>
           </div>
           <div>
             <label htmlFor="laundryLoads" className="block text-sm font-medium text-gray-700">Laundry (loads)</label>
-            <input type="number" min="0" name="laundryLoads" id="laundryLoads" value={formData.laundryLoads} onChange={handleChange} className="mt-1 block w-full py-2 px-3 border... rounded-md"/>
+            <input type="number" min="0" name="laundryLoads" id="laundryLoads" value={formData.laundryLoads} onChange={handleChange} placeholder="0" 
+            className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-600 focus:border-blue-600 sm:text-sm"/>
           </div>
           <div>
             <label htmlFor="dishUses" className="block text-sm font-medium text-gray-700">Dishwasher (uses)</label>
-            <input type="number" min="0" name="dishUses" id="dishUses" value={formData.dishUses} onChange={handleChange} className="mt-1 block w-full py-2 px-3 border... rounded-md"/>
+            <input type="number" min="0" name="dishUses" id="dishUses" value={formData.dishUses} onChange={handleChange} placeholder="0" 
+            className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-600 focus:border-blue-600 sm:text-sm"/>
           </div>
         </div>
       </fieldset>
@@ -327,11 +369,13 @@ const WaterForm = ({ setResultData }) => {
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label htmlFor="meatServings" className="block text-sm font-medium text-gray-700">Meat (serv.)</label>
-            <input type="number" min="0" name="meatServings" id="meatServings" value={formData.meatServings} onChange={handleChange} className="mt-1 block w-full py-2 px-3 border... rounded-md"/>
+            <input type="number" min="0" name="meatServings" id="meatServings" value={formData.meatServings} onChange={handleChange} placeholder="0" 
+            className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-600 focus:border-blue-600sm:text-sm"/>
           </div>
           <div>
             <label htmlFor="vegServings" className="block text-sm font-medium text-gray-700">Veg (serv.)</label>
-            <input type="number" min="0" name="vegServings" id="vegServings" value={formData.vegServings} onChange={handleChange} className="mt-1 block w-full py-2 px-3 border... rounded-md"/>
+            <input type="number" min="0" name="vegServings" id="vegServings" value={formData.vegServings} onChange={handleChange} placeholder="0" 
+            className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-600 focus:border-blue-600 sm:text-sm"/>
           </div>
         </div>
       </fieldset>
@@ -356,16 +400,20 @@ const HealthForm = ({ setResultData }) => {
   
   // Aapke naye schema ke hisaab se state
   const [formData, setFormData] = useState({
-    steps: 0,
-    calories: 0,
-    sleepHours: 0,
-    waterIntake: 0,
+    steps: '',
+    calories: '',
+    sleepHours: '',
+    waterIntake: '',
   });
 
   const handleChange = (e) => {
+    // setFormData({
+    //   ...formData,
+    //   [e.target.name]: Number(e.target.value) || 0,
+    // });
     setFormData({
       ...formData,
-      [e.target.name]: Number(e.target.value) || 0,
+      [e.target.name]: e.target.value,
     });
   };
 
@@ -373,6 +421,11 @@ const HealthForm = ({ setResultData }) => {
     e.preventDefault();
     setIsLoading(true);
     toast.loading('Calculating & Saving Health...');
+
+    const numericFormData = {};
+    for (const key in formData) {
+      numericFormData[key] = Number(formData[key]) || 0;
+    }
 
     try {
       // Aapke naye backend route ko call karo
@@ -404,19 +457,23 @@ const HealthForm = ({ setResultData }) => {
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label htmlFor="steps" className="block text-sm font-medium text-gray-700">Steps Taken</label>
-            <input type="number" min="0" name="steps" id="steps" value={formData.steps} onChange={handleChange} className="mt-1 block w-full py-2 px-3 border... rounded-md"/>
+            <input type="number" min="0" name="steps" id="steps" value={formData.steps} onChange={handleChange} placeholder="0" 
+            className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-pink-500 focus:border-pink-600 sm:text-sm"/>
           </div>
           <div>
             <label htmlFor="calories" className="block text-sm font-medium text-gray-700">Calories Eaten</label>
-            <input type="number" min="0" name="calories" id="calories" value={formData.calories} onChange={handleChange} className="mt-1 block w-full py-2 px-3 border... rounded-md"/>
+            <input type="number" min="0" name="calories" id="calories" value={formData.calories} onChange={handleChange}  placeholder="0" 
+            className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-pink-500 focus:border-pink-600 sm:text-sm"/>
           </div>
           <div>
             <label htmlFor="sleepHours" className="block text-sm font-medium text-gray-700">Sleep (hours)</label>
-            <input type="number" min="0" step="0.5" name="sleepHours" id="sleepHours" value={formData.sleepHours} onChange={handleChange} className="mt-1 block w-full py-2 px-3 border... rounded-md"/>
+            <input type="number" min="0" step="0.5" name="sleepHours" id="sleepHours" value={formData.sleepHours} onChange={handleChange} placeholder="0" 
+            className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-pink-500 focus:border-pink-600 sm:text-sm"/>
           </div>
           <div>
             <label htmlFor="waterIntake" className="block text-sm font-medium text-gray-700">Water (Liters)</label>
-            <input type="number" min="0" step="0.1" name="waterIntake" id="waterIntake" value={formData.waterIntake} onChange={handleChange} className="mt-1 block w-full py-2 px-3 border... rounded-md"/>
+            <input type="number" min="0" step="0.1" name="waterIntake" id="waterIntake" value={formData.waterIntake} onChange={handleChange} placeholder="0" 
+            className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-pink-500 focus:border-pink-600 sm:text-sm"/>
           </div>
         </div>
       </fieldset>
@@ -441,20 +498,24 @@ const FinanceForm = ({ setResultData }) => {
   
   // Aapke naye schema ke hisaab se state
   const [expenses, setExpenses] = useState({
-    food: 0,
-    travel: 0,
-    entertainment: 0,
-    shopping: 0,
-    bills: 0,
-    misc: 0
+    food: '',
+    travel: '',
+    entertainment: '',
+    shopping: '',
+    bills: '',
+    misc: ''
   });
   const [savingsAdded, setSavingsAdded] = useState(0);
 
   // Expenses object ke liye special handler
   const handleExpenseChange = (e) => {
+    // setExpenses({
+    //   ...expenses,
+    //   [e.target.name]: Number(e.target.value) || 0,
+    // });
     setExpenses({
       ...expenses,
-      [e.target.name]: Number(e.target.value) || 0,
+      [e.target.name]: e.target.value,
     });
   };
 
@@ -462,6 +523,14 @@ const FinanceForm = ({ setResultData }) => {
     e.preventDefault();
     setIsLoading(true);
     toast.loading('Calculating & Saving Finance...');
+
+    const numericExpenses = {};
+    for (const key in expenses) {
+      numericExpenses[key] = Number(expenses[key]) || 0;
+    }
+
+    // Convert savings
+    const numericSavings = Number(savingsAdded) || 0;
 
     // Data ko backend ke format mein bhejo
     const postData = {
@@ -503,27 +572,33 @@ const FinanceForm = ({ setResultData }) => {
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
           <div>
             <label htmlFor="food" className="block text-sm font-medium text-gray-700">Food</label>
-            <input type="number" min="0" name="food" id="food" value={expenses.food} onChange={handleExpenseChange} className="mt-1 block w-full py-2 px-3 border... rounded-md"/>
+            <input type="number" min="0" name="food" id="food" value={expenses.food} onChange={handleExpenseChange} placeholder="0" 
+            className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-yellow-500 focus:border-yellow-500 sm:text-sm"/>
           </div>
           <div>
             <label htmlFor="travel" className="block text-sm font-medium text-gray-700">Travel</label>
-            <input type="number" min="0" name="travel" id="travel" value={expenses.travel} onChange={handleExpenseChange} className="mt-1 block w-full py-2 px-3 border... rounded-md"/>
+            <input type="number" min="0" name="travel" id="travel" value={expenses.travel} onChange={handleExpenseChange} placeholder="0" 
+            className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-yellow-500 focus:border-yellow-500 sm:text-sm"/>
           </div>
           <div>
             <label htmlFor="entertainment" className="block text-sm font-medium text-gray-700">Entertainment</label>
-            <input type="number" min="0" name="entertainment" id="entertainment" value={expenses.entertainment} onChange={handleExpenseChange} className="mt-1 block w-full py-2 px-3 border... rounded-md"/>
+            <input type="number" min="0" name="entertainment" id="entertainment" value={expenses.entertainment} onChange={handleExpenseChange} placeholder="0" 
+            className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-yellow-500 focus:border-yellow-500sm:text-sm"/>
           </div>
           <div>
             <label htmlFor="shopping" className="block text-sm font-medium text-gray-700">Shopping</label>
-            <input type="number" min="0" name="shopping" id="shopping" value={expenses.shopping} onChange={handleExpenseChange} className="mt-1 block w-full py-2 px-3 border... rounded-md"/>
+            <input type="number" min="0" name="shopping" id="shopping" value={expenses.shopping} onChange={handleExpenseChange} placeholder="0" 
+            className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-yellow-500 focus:border-yellow-500 sm:text-sm"/>
           </div>
           <div>
             <label htmlFor="bills" className="block text-sm font-medium text-gray-700">Bills</label>
-            <input type="number" min="0" name="bills" id="bills" value={expenses.bills} onChange={handleExpenseChange} className="mt-1 block w-full py-2 px-3 border... rounded-md"/>
+            <input type="number" min="0" name="bills" id="bills" value={expenses.bills} onChange={handleExpenseChange} placeholder="0" 
+            className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-yellow-500 focus:border-yellow-500 sm:text-sm"/>
           </div>
           <div>
             <label htmlFor="misc" className="block text-sm font-medium text-gray-700">Misc.</label>
-            <input type="number" min="0" name="misc" id="misc" value={expenses.misc} onChange={handleExpenseChange} className="mt-1 block w-full py-2 px-3 border... rounded-md"/>
+            <input type="number" min="0" name="misc" id="misc" value={expenses.misc} onChange={handleExpenseChange} placeholder="0" 
+            className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-yellow-500 focus:border-yellow-500 sm:text-sm"/>
           </div>
         </div>
       </fieldset>
@@ -533,7 +608,8 @@ const FinanceForm = ({ setResultData }) => {
         <legend className="text-lg font-semibold text-green-700 px-2">Daily Savings</legend>
         <div>
           <label htmlFor="savingsAdded" className="block text-sm font-medium text-gray-700">Savings Added Today (INR)</label>
-          <input type="number" min="0" name="savingsAdded" id="savingsAdded" value={savingsAdded} onChange={(e) => setSavingsAdded(Number(e.target.value) || 0)} className="mt-1 block w-full py-2 px-3 border... rounded-md"/>
+          <input type="number" min="0" name="savingsAdded" id="savingsAdded" value={savingsAdded} onChange={(e) => setSavingsAdded(Number(e.target.value) || 0)} placeholder="0"
+          className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm"/>
         </div>
       </fieldset>
 
@@ -696,7 +772,7 @@ const ResultScreen = ({ result, onClose }) => {
 // 6. UPDATED "ACTIVITY FORM" (Jo ab HealthForm ko bhi jaanta hai)
 // ===================================================================
 const ActivityForm = ({ type, setResultData, onClose }) => {
-  const FinanceForm = () => <p>Finance form yahaan aayega.</p>;
+ // const FinanceForm = () => <p>Finance form yahaan aayega.</p>;
 
   switch (type) {
     case 'carbon':
